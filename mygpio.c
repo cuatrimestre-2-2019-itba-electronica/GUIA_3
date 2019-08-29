@@ -40,7 +40,7 @@ void MYgpioMode (pin_t pin, uint8_t mode){
 		if(mode==OUTPUT){
 			GPIOA->PDDR|=OUTPUT<<pinBit;
 		}else{
-			GPIOA->PDDR|=INPUT<<pinBit;// not tiene mucho sentido usar la mascara xq son todos unos
+			GPIOA->PDDR&=!(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
 			PORTA->PCR[pinBit]|=PORT_PCR_PS(peps[1]);//seteo la impedancia del pin
 			PORTA->PCR[pinBit]|=PORT_PCR_PE(peps[0]);//
 		}
@@ -53,7 +53,7 @@ void MYgpioMode (pin_t pin, uint8_t mode){
 		if(mode==OUTPUT){
 			GPIOB->PDDR|=OUTPUT<<pinBit;
 		}else{
-			GPIOB->PDDR|=INPUT<<pinBit;// not tiene mucho sentido usar la mascara xq son todos unos
+			GPIOB->PDDR&=!(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
 			PORTB->PCR[pinBit]|=PORT_PCR_PS(peps[1]);//seteo la impedancia del pin
 			PORTB->PCR[pinBit]|=PORT_PCR_PE(peps[0]);//
 		}
@@ -66,7 +66,7 @@ void MYgpioMode (pin_t pin, uint8_t mode){
 		if(mode==OUTPUT){
 			GPIOC->PDDR|=OUTPUT<<pinBit;
 		}else{
-			GPIOC->PDDR|=INPUT<<pinBit;// not tiene mucho sentido usar la mascara xq son todos unos
+			GPIOC->PDDR&=!(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
 			PORTC->PCR[pinBit]|=PORT_PCR_PS(peps[1]);//seteo la impedancia del pin
 			PORTC->PCR[pinBit]|=PORT_PCR_PE(peps[0]);//
 		}
@@ -79,7 +79,7 @@ void MYgpioMode (pin_t pin, uint8_t mode){
 		if(mode==OUTPUT){
 			GPIOD->PDDR|=OUTPUT<<pinBit;
 		}else{
-			GPIOD->PDDR|=INPUT<<pinBit;// not tiene mucho sentido usar la mascara xq son todos unos
+			GPIOD->PDDR&=!(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
 			PORTD->PCR[pinBit]|=PORT_PCR_PS(peps[1]);//seteo la impedancia del pin
 			PORTD->PCR[pinBit]|=PORT_PCR_PE(peps[0]);//
 		}
@@ -92,7 +92,7 @@ void MYgpioMode (pin_t pin, uint8_t mode){
 		if(mode==OUTPUT){
 			GPIOE->PDDR|=OUTPUT<<pinBit;
 		}else{
-			GPIOE->PDDR|=INPUT<<pinBit;// not tiene mucho sentido usar la mascara xq son todos unos
+			GPIOE->PDDR&=!(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
 			PORTE->PCR[pinBit]|=PORT_PCR_PS(peps[1]);//seteo la impedancia del pin
 			PORTE->PCR[pinBit]|=PORT_PCR_PE(peps[0]);//
 		}
