@@ -51,6 +51,9 @@ void MYgpioClear (pin_t pin);
 bool MYgpioRead (pin_t pin);
 
 
+
+//bool MYgpioIRQ (pin_t pin, uint8_t irqMode, pinIrqFun irqFun);
+
 /*******************************************************************************
  ******************************************************************************/
 

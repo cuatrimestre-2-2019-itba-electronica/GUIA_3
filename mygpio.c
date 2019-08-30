@@ -34,65 +34,70 @@ void MYgpioMode (pin_t pin, uint8_t mode){
 
 	switch(pinPort){
 	case PA:
+		PORTA->PCR[pinBit] = 0;
 		SIM->SCGC5 |= SIM_SCGC5_PORTA_MASK;//Habilito el clock al puerto correspondiente
 		PORTA->PCR[pinBit]|=PORT_PCR_MUX(1);//Configuro el mux del pin para que apunte al GPIO
 		PORTA->PCR[pinBit]|=PORT_PCR_IRQC(0);//DESHABILITO INTERRUPCIONES
 		if(mode==OUTPUT){
 			GPIOA->PDDR|=OUTPUT<<pinBit;
 		}else{
-			GPIOA->PDDR&=!(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
+			GPIOA->PDDR &= ~(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
 			PORTA->PCR[pinBit]|=PORT_PCR_PS(peps[1]);//seteo la impedancia del pin
 			PORTA->PCR[pinBit]|=PORT_PCR_PE(peps[0]);//
 		}
 		break;
 
 	case PB:
+		PORTB->PCR[pinBit] = 0;
 		SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK;
 		PORTB->PCR[pinBit]|=PORT_PCR_MUX(1);
 		PORTB->PCR[pinBit]|=PORT_PCR_IRQC(0);
 		if(mode==OUTPUT){
 			GPIOB->PDDR|=OUTPUT<<pinBit;
 		}else{
-			GPIOB->PDDR&=!(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
+			GPIOB->PDDR &= ~(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
 			PORTB->PCR[pinBit]|=PORT_PCR_PS(peps[1]);//seteo la impedancia del pin
 			PORTB->PCR[pinBit]|=PORT_PCR_PE(peps[0]);//
 		}
 		break;
 
 	case PC:
+		PORTC->PCR[pinBit] = 0;
 		SIM->SCGC5 |= SIM_SCGC5_PORTC_MASK;
 		PORTC->PCR[pinBit]|=PORT_PCR_MUX(1);
 		PORTC->PCR[pinBit]|=PORT_PCR_IRQC(0);
 		if(mode==OUTPUT){
 			GPIOC->PDDR|=OUTPUT<<pinBit;
 		}else{
-			GPIOC->PDDR&=!(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
+			GPIOC->PDDR  &= ~(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
 			PORTC->PCR[pinBit]|=PORT_PCR_PS(peps[1]);//seteo la impedancia del pin
 			PORTC->PCR[pinBit]|=PORT_PCR_PE(peps[0]);//
 		}
 		break;
 
 	case PD:
+		PORTD->PCR[pinBit] = 0;
 		SIM->SCGC5 |= SIM_SCGC5_PORTD_MASK;
 		PORTD->PCR[pinBit]|=PORT_PCR_MUX(1);
 		PORTD->PCR[pinBit]|=PORT_PCR_IRQC(0);
 		if(mode==OUTPUT){
 			GPIOD->PDDR|=OUTPUT<<pinBit;
 		}else{
-			GPIOD->PDDR&=!(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
+			GPIOD->PDDR &= ~(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
 			PORTD->PCR[pinBit]|=PORT_PCR_PS(peps[1]);//seteo la impedancia del pin
 			PORTD->PCR[pinBit]|=PORT_PCR_PE(peps[0]);//
 		}
 		break;
 
 	case PE:
+		PORTE->PCR[pinBit] = 0;
 		SIM->SCGC5 |= SIM_SCGC5_PORTE_MASK;
 		PORTE->PCR[pinBit]|=PORT_PCR_MUX(1);
 		PORTE->PCR[pinBit]|=PORT_PCR_IRQC(0);
 		if(mode==OUTPUT){
 			GPIOE->PDDR|=OUTPUT<<pinBit;
 		}else{
-			GPIOE->PDDR&=!(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
+			GPIOE->PDDR &= ~(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
 			PORTE->PCR[pinBit]|=PORT_PCR_PS(peps[1]);//seteo la impedancia del pin
 			PORTE->PCR[pinBit]|=PORT_PCR_PE(peps[0]);//
 		}
@@ -203,6 +208,13 @@ bool MYgpioRead (pin_t pin){
 		return (PTE->PDIR & (1 << pinBit));
 		break;
 	}
-
 	return false;
 }
+
+
+/*bool MYgpioIRQ (pin_t pin, uint8_t irqMode) {
+	int pinPort = PIN2PORT(pin);
+	int pinBit = PIN2NUM(pin);
+	PORT_BASE_PTRS[0];
+	return 0;
+}*/
