@@ -11,6 +11,38 @@
 #include "gpio.h"
 
 
+
+
+// IRQ modes
+enum {
+    GPIO_IRQ_MODE_DISABLE,
+    GPIO_IRQ_MODE_RISING_EDGE,
+    GPIO_IRQ_MODE_FALLING_EDGE,
+    GPIO_IRQ_MODE_BOTH_EDGES,
+
+    GPIO_IRQ_CANT_MODES
+};
+
+
+
+/*******************************************************************************
+ * ENUMERATIONS AND STRUCTURES AND TYPEDEFS
+ ******************************************************************************/
+
+typedef uint8_t pin_t;
+
+typedef void (*pinIrqFun_t)(void);
+
+
+/*******************************************************************************
+ * VARIABLE PROTOTYPES WITH GLOBAL SCOPE
+ ******************************************************************************/
+
+/*******************************************************************************
+ * FUNCTION PROTOTYPES WITH GLOBAL SCOPE
+ ******************************************************************************/
+
+
 /**
  * @brief Configures the specified pin to behave either as an input or an output
  * @param pin the pin whose mode you wish to set (according PORTNUM2PIN)

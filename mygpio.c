@@ -4,6 +4,10 @@
 //getPEPS
 //devuelve en el arreglo de char devuelvo en la posicion 0 PE y en la posicion 1 PS
 //
+static PORT_Type * ports[] = PORT_BASE_PTRS;
+static GPIO_Type * GPIOs[] = GPIO_BASE_PTRS;
+static uint32_t sim_port[] = {SIM_SCGC5_PORTA_MASK, SIM_SCGC5_PORTB_MASK, SIM_SCGC5_PORTC_MASK, SIM_SCGC5_PORTD_MASK, SIM_SCGC5_PORTE_MASK};
+
 void getPEPS(char peps[2], uint8_t mode){
 		switch(mode){
 		case INPUT:
@@ -28,82 +32,24 @@ void getPEPS(char peps[2], uint8_t mode){
 void MYgpioMode (pin_t pin, uint8_t mode){
 	int pinPort = PIN2PORT(pin);
 	int pinBit = PIN2NUM(pin);
-	char peps[2];// posicion 0 pe y posicion 1 ps
+	char peps[2];//posicion 0 pe y posicion 1 ps
 	getPEPS(peps,mode);//calculo los flags ps y pe de acuerdo al modo
 
 
-	switch(pinPort){
-	case PA:
-		PORTA->PCR[pinBit] = 0;
-		SIM->SCGC5 |= SIM_SCGC5_PORTA_MASK;//Habilito el clock al puerto correspondiente
-		PORTA->PCR[pinBit]|=PORT_PCR_MUX(1);//Configuro el mux del pin para que apunte al GPIO
-		PORTA->PCR[pinBit]|=PORT_PCR_IRQC(0);//DESHABILITO INTERRUPCIONES
-		if(mode==OUTPUT){
-			GPIOA->PDDR|=OUTPUT<<pinBit;
-		}else{
-			GPIOA->PDDR &= ~(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
-			PORTA->PCR[pinBit]|=PORT_PCR_PS(peps[1]);//seteo la impedancia del pin
-			PORTA->PCR[pinBit]|=PORT_PCR_PE(peps[0]);//
-		}
-		break;
 
-	case PB:
-		PORTB->PCR[pinBit] = 0;
-		SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK;
-		PORTB->PCR[pinBit]|=PORT_PCR_MUX(1);
-		PORTB->PCR[pinBit]|=PORT_PCR_IRQC(0);
-		if(mode==OUTPUT){
-			GPIOB->PDDR|=OUTPUT<<pinBit;
-		}else{
-			GPIOB->PDDR &= ~(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
-			PORTB->PCR[pinBit]|=PORT_PCR_PS(peps[1]);//seteo la impedancia del pin
-			PORTB->PCR[pinBit]|=PORT_PCR_PE(peps[0]);//
-		}
-		break;
+	ports[pinPort]->PCR[pinBit] = 0;
+	SIM->SCGC5 |= sim_port[pinPort]; //Habilito el clock al puerto correspondiente
+	ports[pinPort]->PCR[pinBit]|= PORT_PCR_MUX(1); //Configuro el mux del pin para que apunte al GPIO
+	ports[pinPort]->PCR[pinBit]|= PORT_PCR_IRQC(0); //DESHABILITO INTERRUPCIONES
 
-	case PC:
-		PORTC->PCR[pinBit] = 0;
-		SIM->SCGC5 |= SIM_SCGC5_PORTC_MASK;
-		PORTC->PCR[pinBit]|=PORT_PCR_MUX(1);
-		PORTC->PCR[pinBit]|=PORT_PCR_IRQC(0);
-		if(mode==OUTPUT){
-			GPIOC->PDDR|=OUTPUT<<pinBit;
-		}else{
-			GPIOC->PDDR  &= ~(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
-			PORTC->PCR[pinBit]|=PORT_PCR_PS(peps[1]);//seteo la impedancia del pin
-			PORTC->PCR[pinBit]|=PORT_PCR_PE(peps[0]);//
-		}
-		break;
-
-	case PD:
-		PORTD->PCR[pinBit] = 0;
-		SIM->SCGC5 |= SIM_SCGC5_PORTD_MASK;
-		PORTD->PCR[pinBit]|=PORT_PCR_MUX(1);
-		PORTD->PCR[pinBit]|=PORT_PCR_IRQC(0);
-		if(mode==OUTPUT){
-			GPIOD->PDDR|=OUTPUT<<pinBit;
-		}else{
-			GPIOD->PDDR &= ~(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
-			PORTD->PCR[pinBit]|=PORT_PCR_PS(peps[1]);//seteo la impedancia del pin
-			PORTD->PCR[pinBit]|=PORT_PCR_PE(peps[0]);//
-		}
-		break;
-
-	case PE:
-		PORTE->PCR[pinBit] = 0;
-		SIM->SCGC5 |= SIM_SCGC5_PORTE_MASK;
-		PORTE->PCR[pinBit]|=PORT_PCR_MUX(1);
-		PORTE->PCR[pinBit]|=PORT_PCR_IRQC(0);
-		if(mode==OUTPUT){
-			GPIOE->PDDR|=OUTPUT<<pinBit;
-		}else{
-			GPIOE->PDDR &= ~(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
-			PORTE->PCR[pinBit]|=PORT_PCR_PS(peps[1]);//seteo la impedancia del pin
-			PORTE->PCR[pinBit]|=PORT_PCR_PE(peps[0]);//
-		}
-		break;
+	if(mode==OUTPUT) {
+		GPIOs[pinPort]->PDDR |= OUTPUT<<pinBit;
 	}
-
+	else {
+		GPIOs[pinPort]->PDDR &= ~(1<<pinBit);// not tiene mucho sentido usar la mascara xq son todos unos
+		ports[pinPort]->PCR[pinBit]|= PORT_PCR_PS(peps[1]);//seteo la impedancia del pin
+		ports[pinPort]->PCR[pinBit]|= PORT_PCR_PE(peps[0]);//
+	}
 }
 
 void MYgpioWrite (pin_t pin, bool value){
@@ -116,7 +62,6 @@ void MYgpioWrite (pin_t pin, bool value){
 	{
 		MYgpioClear(pin);
 	}
-
 }
 
 
@@ -212,9 +157,14 @@ bool MYgpioRead (pin_t pin){
 }
 
 
-/*bool MYgpioIRQ (pin_t pin, uint8_t irqMode) {
+bool MYgpioIRQ (pin_t pin, uint8_t irqMode, pinIrqFun_t irqFun) {
 	int pinPort = PIN2PORT(pin);
 	int pinBit = PIN2NUM(pin);
-	PORT_BASE_PTRS[0];
+	int * port_irqn = PORTA_IRQn;
+
+	ports[pinPort]->PCR &= ~PORT_PCR_IRQC_MASK;
+	ports[pinPort]->PCR |= PORT_PCR_IRQC(irqMode);
+	NVIC_EnableIRQ(port_irqn[pinPort]);
+
 	return 0;
-}*/
+}
